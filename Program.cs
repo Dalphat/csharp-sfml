@@ -118,8 +118,8 @@ namespace CSharpSFML
                 updateAccumulator += tick;
                 if(updateAccumulator > updatePerSecond)
                 {
-                    UpdateAction?.Invoke(updatePerSecond);//IF not null, invoke this function
-                    updateAccumulator -= updatePerSecond;
+                    UpdateAction?.Invoke(updateAccumulator);//IF not null, invoke this function
+                    updateAccumulator = 0;
                 }
 
                 drawAccumulator += tick;
@@ -203,7 +203,7 @@ namespace CSharpSFML
             //          This would also allow you to change individual procedures rather than this whole entire "KeyUpdate" function.
             //          I didn't want to confuse you by adding more dictionaries.
             game.UpdateAction = (delta) => {
-                float moveDelta = delta / 120;//Moves 1 pixel every 1/120th of a second time objects Velocity.
+                float moveDelta = delta / 120;//Moves 1 pixel every 1/120th of a second.
                 Vector2f Velocity = new Vector2f();
                 foreach (KeyValuePair<Key, bool> pair in game.KeyState)
                 {
@@ -226,7 +226,8 @@ namespace CSharpSFML
                                 Velocity.X += moveDelta;
                                 break;
                             case Key.Run:
-                                aniShape.Velocity += aniShape.Velocity <= aniShape.MaxVelocity ? aniShape.Acceleration : 0;
+                                aniShape.Velocity = aniShape.Velocity + aniShape.Acceleration <= aniShape.MaxVelocity ? 
+                                aniShape.Velocity + aniShape.Acceleration : aniShape.MaxVelocity;
                                 break;
                         }
                     }
@@ -235,7 +236,8 @@ namespace CSharpSFML
                         switch (pair.Key)
                         {
                             case Key.Run:
-                                aniShape.Velocity += aniShape.Velocity >= aniShape.MinVelocity ? -aniShape.Acceleration : 0;
+                                aniShape.Velocity = aniShape.Velocity - aniShape.Acceleration >= aniShape.MinVelocity ?
+                                aniShape.Velocity - aniShape.Acceleration : aniShape.MinVelocity;
                                 break;
                         }
                     }
